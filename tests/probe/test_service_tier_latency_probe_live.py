@@ -1,8 +1,7 @@
 import statistics
 import time
 
-from openai_chat_compat_tester.test_support import ALLOWED_SERVICE_TIERS
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_chat_compat_tester.test_support import ALLOWED_SERVICE_TIERS, conversation_messages
 
 
 def test_service_tier_latency_probe(live_client, model_name, turn_mode):
@@ -19,7 +18,9 @@ def test_service_tier_latency_probe(live_client, model_name, turn_mode):
                 temperature=0,
                 max_tokens=12,
                 service_tier=tier,
-                messages=conversation_messages([{"role": "user", "content": "Reply with exactly ping."}], turn_mode),
+                messages=conversation_messages(
+                    [{"role": "user", "content": "Reply with exactly ping."}], turn_mode
+                ),
             )
             elapsed = time.perf_counter() - start
             actual_tier = getattr(response, "service_tier", None)

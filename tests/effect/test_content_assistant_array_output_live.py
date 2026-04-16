@@ -8,10 +8,13 @@ def test_content_assistant_array_output(live_client, model_name, turn_mode):
         model=model_name,
         temperature=0,
         max_tokens=8,
-        messages=conversation_messages([
-            {"role": "developer", "content": "Reply exactly with: hello world"},
-            {"role": "user", "content": "Do it."},
-        ], turn_mode),
+        messages=conversation_messages(
+            [
+                {"role": "developer", "content": "Reply exactly with: hello world"},
+                {"role": "user", "content": "Do it."},
+            ],
+            turn_mode,
+        ),
     )
 
     payload = json.loads(raw.text)
@@ -19,5 +22,9 @@ def test_content_assistant_array_output(live_client, model_name, turn_mode):
 
     assert isinstance(content, list)
     assert content
-    text_parts = [part.get("text", "") for part in content if part.get("type") in {"text", "output_text"}]
+    text_parts = [
+        part.get("text", "")
+        for part in content
+        if part.get("type") in {"text", "output_text"}
+    ]
     assert "".join(text_parts).strip() == "hello world"

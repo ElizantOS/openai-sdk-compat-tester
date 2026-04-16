@@ -6,7 +6,9 @@ def test_stop_effect(live_client, model_name, turn_mode):
     full_text = response_text(baseline).strip()
     assert "<END>" in full_text and "omega" in full_text
 
-    stopped = literal_echo_request(live_client, model_name, turn_mode=turn_mode, stop=["<END>"])
+    stopped = literal_echo_request(
+        live_client, model_name, turn_mode=turn_mode, stop=["<END>"]
+    )
     cut_text = response_text(stopped).strip()
 
     assert cut_text.lower() == "alpha"

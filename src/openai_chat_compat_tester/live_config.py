@@ -13,7 +13,9 @@ def extract_model_ids(response) -> list[str]:
     return model_ids
 
 
-def choose_model_id(model_ids: list[str], preferred_model: str | None = None) -> tuple[str, bool]:
+def choose_model_id(
+    model_ids: list[str], preferred_model: str | None = None
+) -> tuple[str, bool]:
     if not model_ids:
         raise ValueError("router returned no models from /v1/models")
 

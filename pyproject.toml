@@ -60,6 +60,10 @@ pythonpath = ["src"]
 
 [tool.ruff]
 target-version = "py39"
+line-length = 140
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*.py" = ["E402"]

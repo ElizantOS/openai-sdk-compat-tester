@@ -6,7 +6,9 @@ def test_usage_token_arithmetic(live_client, model_name, turn_mode):
         model=model_name,
         temperature=0,
         max_tokens=16,
-        messages=conversation_messages([{"role": "user", "content": "Say hello in one short sentence."}], turn_mode),
+        messages=conversation_messages(
+            [{"role": "user", "content": "Say hello in one short sentence."}], turn_mode
+        ),
     )
 
     usage = response.usage

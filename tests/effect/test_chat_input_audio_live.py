@@ -1,11 +1,13 @@
-import pytest
 import os
 from pathlib import Path
 
-from openai_chat_compat_tester.test_support import conversation_messages
-from openai_chat_compat_tester.test_support import make_audio_file_wav_base64
-from openai_chat_compat_tester.test_support import response_text
+import pytest
 
+from openai_chat_compat_tester.test_support import (
+    conversation_messages,
+    make_audio_file_wav_base64,
+    response_text,
+)
 
 DEFAULT_AUDIO_FILE = Path(__file__).resolve().parents[1] / "fixtures" / "seg_3.mp3"
 DEFAULT_EXPECTED_TEXT = "AI实时读取日志,自动注入JS,截图,模拟交互。"

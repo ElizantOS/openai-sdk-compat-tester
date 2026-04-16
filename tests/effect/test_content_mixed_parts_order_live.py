@@ -1,6 +1,8 @@
-from openai_chat_compat_tester.test_support import RED_SQUARE_PNG_BASE64
-from openai_chat_compat_tester.test_support import response_text
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_chat_compat_tester.test_support import (
+    RED_SQUARE_PNG_BASE64,
+    conversation_messages,
+    response_text,
+)
 
 
 def test_content_mixed_parts_order(live_client, model_name, turn_mode):

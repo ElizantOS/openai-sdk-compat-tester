@@ -1,5 +1,5 @@
-from pathlib import Path
 import ast
+from pathlib import Path
 
 from openai_chat_compat_tester.scenarios import CAPABILITIES
 

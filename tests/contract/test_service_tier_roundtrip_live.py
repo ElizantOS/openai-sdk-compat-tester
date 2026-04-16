@@ -1,5 +1,7 @@
-from openai_chat_compat_tester.test_support import ALLOWED_SERVICE_TIERS
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_chat_compat_tester.test_support import (
+    ALLOWED_SERVICE_TIERS,
+    conversation_messages,
+)
 
 
 def _requested_service_tiers():

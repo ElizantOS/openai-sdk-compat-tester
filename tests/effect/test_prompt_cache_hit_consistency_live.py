@@ -1,5 +1,4 @@
-from openai_chat_compat_tester.test_support import response_text
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_chat_compat_tester.test_support import conversation_messages, response_text
 
 
 def _normalize_cache_marker(text: str) -> str:
@@ -10,10 +9,13 @@ def test_prompt_cache_hit_consistency(live_client, model_name, turn_mode):
     kwargs = {
         "model": model_name,
         "prompt_cache_key": "compat-cache-hit-consistency",
-        "messages": conversation_messages([
-            {"role": "system", "content": "Reply exactly with CACHE-CONSISTENT."},
-            {"role": "user", "content": "Do it."},
-        ], turn_mode),
+        "messages": conversation_messages(
+            [
+                {"role": "system", "content": "Reply exactly with CACHE-CONSISTENT."},
+                {"role": "user", "content": "Do it."},
+            ],
+            turn_mode,
+        ),
         "temperature": 0,
         "max_tokens": 8,
     }

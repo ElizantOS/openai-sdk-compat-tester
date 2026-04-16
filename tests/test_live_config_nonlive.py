@@ -1,5 +1,4 @@
-from openai_chat_compat_tester.live_config import choose_model_id
-from openai_chat_compat_tester.live_config import extract_model_ids
+from openai_chat_compat_tester.live_config import choose_model_id, extract_model_ids
 
 
 class _Model:
@@ -18,13 +17,17 @@ def test_extract_model_ids_from_mixed_response_entries():
 
 
 def test_choose_model_id_prefers_explicit_advertised_model():
-    selected, used_fallback = choose_model_id(["gpt-5.4", "gpt-5.4-mini"], "gpt-5.4-mini")
+    selected, used_fallback = choose_model_id(
+        ["gpt-5.4", "gpt-5.4-mini"], "gpt-5.4-mini"
+    )
     assert selected == "gpt-5.4-mini"
     assert used_fallback is False
 
 
 def test_choose_model_id_falls_back_to_first_advertised_model():
-    selected, used_fallback = choose_model_id(["gpt-5.4", "gpt-5.4-mini"], "gpt-5-codex")
+    selected, used_fallback = choose_model_id(
+        ["gpt-5.4", "gpt-5.4-mini"], "gpt-5-codex"
+    )
     assert selected == "gpt-5.4"
     assert used_fallback is True
 

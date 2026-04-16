@@ -31,16 +31,19 @@ def test_chat_parallel_tool_calls(live_client, model_name, turn_mode):
 
     response = live_client.chat.completions.create(
         model=model_name,
-        messages=conversation_messages([
-            {
-                "role": "user",
-                "content": (
-                    "Call both get_weather and get_time. "
-                    "Use Shanghai for the city and Asia/Shanghai for the timezone. "
-                    "Do not answer with plain text."
-                ),
-            }
-        ], turn_mode),
+        messages=conversation_messages(
+            [
+                {
+                    "role": "user",
+                    "content": (
+                        "Call both get_weather and get_time. "
+                        "Use Shanghai for the city and Asia/Shanghai for the timezone. "
+                        "Do not answer with plain text."
+                    ),
+                }
+            ],
+            turn_mode,
+        ),
         tools=tools,
         tool_choice="auto",
         parallel_tool_calls=True,

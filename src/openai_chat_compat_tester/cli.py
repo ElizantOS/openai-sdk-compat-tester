@@ -1,25 +1,25 @@
 from __future__ import annotations
 
 import argparse
-from contextlib import nullcontext
 import json
 import os
 import subprocess
 import sys
 import time
+from contextlib import nullcontext
 from pathlib import Path
 
-from rich.console import Console
-from rich.console import Group
+from rich.console import Console, Group
 from rich.live import Live
 from rich.panel import Panel
 from rich.text import Text
 
-from .scenarios import CAPABILITIES
-from .scenarios import capability_expectation
-from .scenarios import capability_suite
-from .scenarios import find_capability
-
+from .scenarios import (
+    CAPABILITIES,
+    capability_expectation,
+    capability_suite,
+    find_capability,
+)
 
 SUITES = ("effect", "contract", "probe", "acceptance")
 

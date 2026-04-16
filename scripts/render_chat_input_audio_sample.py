@@ -7,15 +7,15 @@ import os
 import sys
 from pathlib import Path
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from openai_chat_compat_tester.test_support import make_audio_file_wav_base64
-from openai_chat_compat_tester.test_support import make_spoken_wav_base64
-
+from openai_chat_compat_tester.test_support import (
+    make_audio_file_wav_base64,
+    make_spoken_wav_base64,
+)
 
 DEFAULT_PHRASE = "hello audio"
 DEFAULT_AUDIO_FILE = PROJECT_ROOT / "tests" / "fixtures" / "seg_3.mp3"
@@ -60,7 +60,9 @@ def resolve_inputs(args: argparse.Namespace) -> tuple[str, str | None]:
     if not args.synthesize:
         return str(DEFAULT_AUDIO_FILE), DEFAULT_EXPECTED_TEXT
 
-    phrase = (args.text or os.getenv("OPENAI_COMPAT_AUDIO_EXPECTED_TEXT", "")).strip() or DEFAULT_PHRASE
+    phrase = (
+        args.text or os.getenv("OPENAI_COMPAT_AUDIO_EXPECTED_TEXT", "")
+    ).strip() or DEFAULT_PHRASE
     return "", phrase
 
 

@@ -221,7 +221,6 @@ CAPABILITIES = [
         status="covered",
         test_file="tests/effect/test_concurrent_seed_consistency_live.py",
     ),
-
     # Contract
     Capability(
         slug="models-listing",
@@ -380,7 +379,6 @@ CAPABILITIES = [
         status="covered",
         test_file="tests/contract/test_usage_content_scale_live.py",
     ),
-
     # Probe
     Capability(
         slug="service-tier-latency-probe",
@@ -397,7 +395,6 @@ CAPABILITIES = [
         test_file="tests/probe/test_prompt_cache_latency_usage_live.py",
         notes="Probe-oriented test; it records observability rather than asserting absolute latency improvement.",
     ),
-
     # Acceptance-only planned exception
     Capability(
         slug="chat-logit-bias-semantic",

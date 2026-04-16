@@ -8,7 +8,9 @@ from openai_chat_compat_tester.test_support import conversation_messages
 
 
 def _assert_reasoning_effort_echoes_upstream(model_name: str, effort: str) -> None:
-    base_url = os.getenv("OPENAI_COMPAT_BASE_URL", "http://127.0.0.1:18080/v1").rstrip("/")
+    base_url = os.getenv("OPENAI_COMPAT_BASE_URL", "http://127.0.0.1:18080/v1").rstrip(
+        "/"
+    )
     api_key = os.getenv("OPENAI_COMPAT_API_KEY", "compat-test")
     headers = {"Authorization": f"Bearer {api_key}"}
     payload = {
@@ -28,7 +30,11 @@ def _assert_reasoning_effort_echoes_upstream(model_name: str, effort: str) -> No
             for raw_line in response.iter_lines():
                 if raw_line is None:
                     continue
-                line = raw_line if isinstance(raw_line, str) else raw_line.decode("utf-8", "replace")
+                line = (
+                    raw_line
+                    if isinstance(raw_line, str)
+                    else raw_line.decode("utf-8", "replace")
+                )
                 if not line.startswith("data: "):
                     continue
                 try:
@@ -52,7 +58,9 @@ def test_chat_reasoning_effort(live_client, model_name, turn_mode):
     try:
         response = live_client.chat.completions.create(
             model=model_name,
-            messages=conversation_messages([{"role": "user", "content": "Compute 1 + 1."}], turn_mode),
+            messages=conversation_messages(
+                [{"role": "user", "content": "Compute 1 + 1."}], turn_mode
+            ),
             reasoning_effort="medium",
             max_tokens=50,
         )

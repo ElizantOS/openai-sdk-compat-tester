@@ -1,5 +1,8 @@
-from openai_chat_compat_tester.test_support import DEFAULT_RED_REMOTE_IMAGE_URL, response_text
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_chat_compat_tester.test_support import (
+    DEFAULT_RED_REMOTE_IMAGE_URL,
+    conversation_messages,
+    response_text,
+)
 
 
 def test_vision_remote_url(live_client, model_name, turn_mode):

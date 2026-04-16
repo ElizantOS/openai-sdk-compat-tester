@@ -1,8 +1,10 @@
 from concurrent.futures import ThreadPoolExecutor
 
-from openai_chat_compat_tester.test_support import response_text
-from openai_chat_compat_tester.test_support import conversation_messages
-from openai_chat_compat_tester.test_support import stream_text_deltas
+from openai_chat_compat_tester.test_support import (
+    conversation_messages,
+    response_text,
+    stream_text_deltas,
+)
 
 
 def test_concurrent_seed_consistency(live_client, model_name, turn_mode):

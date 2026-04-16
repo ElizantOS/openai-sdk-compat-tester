@@ -5,10 +5,13 @@ def test_chat_tools_stream(live_client, model_name, tools, turn_mode):
     stream = live_client.chat.completions.create(
         model=model_name,
         stream=True,
-        messages=conversation_messages([
-            {"role": "system", "content": "Use the tool when asked."},
-            {"role": "user", "content": "Call the echo tool with text=hello"},
-        ], turn_mode),
+        messages=conversation_messages(
+            [
+                {"role": "system", "content": "Use the tool when asked."},
+                {"role": "user", "content": "Call the echo tool with text=hello"},
+            ],
+            turn_mode,
+        ),
         tools=tools,
         tool_choice={"type": "function", "function": {"name": "echo"}},
     )

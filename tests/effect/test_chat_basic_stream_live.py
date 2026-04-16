@@ -5,10 +5,13 @@ def test_chat_basic_stream(live_client, model_name, turn_mode):
     stream = live_client.chat.completions.create(
         model=model_name,
         stream=True,
-        messages=conversation_messages([
-            {"role": "system", "content": "Be terse."},
-            {"role": "user", "content": "Reply with exactly: ok"},
-        ], turn_mode),
+        messages=conversation_messages(
+            [
+                {"role": "system", "content": "Be terse."},
+                {"role": "user", "content": "Reply with exactly: ok"},
+            ],
+            turn_mode,
+        ),
     )
 
     chunks = []

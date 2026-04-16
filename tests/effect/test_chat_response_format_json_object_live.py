@@ -1,7 +1,9 @@
 import json
 
-from openai_chat_compat_tester.test_support import looks_like_json_object
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_chat_compat_tester.test_support import (
+    conversation_messages,
+    looks_like_json_object,
+)
 
 
 def test_chat_response_format_json_object(live_client, model_name, turn_mode):

@@ -1,5 +1,7 @@
-from openai_chat_compat_tester.test_support import stream_text_deltas
-from openai_chat_compat_tester.test_support import with_multilingual_history
+from openai_chat_compat_tester.test_support import (
+    stream_text_deltas,
+    with_multilingual_history,
+)
 
 
 def test_stream_interruption_retry(live_client, model_name):

@@ -2,13 +2,14 @@ import json
 
 from rich.console import Console
 
-from openai_chat_compat_tester.cli import _build_json_report
-from openai_chat_compat_tester.cli import _render_tui
-from openai_chat_compat_tester.cli import _print_run_report
-from openai_chat_compat_tester.cli import _selected_capabilities
-from openai_chat_compat_tester.cli import _write_output
-from openai_chat_compat_tester.scenarios import CAPABILITIES
-from openai_chat_compat_tester.scenarios import capability_suite
+from openai_chat_compat_tester.cli import (
+    _build_json_report,
+    _print_run_report,
+    _render_tui,
+    _selected_capabilities,
+    _write_output,
+)
+from openai_chat_compat_tester.scenarios import CAPABILITIES, capability_suite
 
 
 def test_capability_suites_are_recognized():

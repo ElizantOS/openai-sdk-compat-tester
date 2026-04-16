@@ -4,7 +4,9 @@ from openai_chat_compat_tester.test_support import conversation_messages
 def test_stream_first_chunk_role(live_client, model_name, turn_mode):
     stream = live_client.chat.completions.create(
         model=model_name,
-        messages=conversation_messages([{"role": "user", "content": "Say hello."}], turn_mode),
+        messages=conversation_messages(
+            [{"role": "user", "content": "Say hello."}], turn_mode
+        ),
         stream=True,
         max_tokens=12,
     )

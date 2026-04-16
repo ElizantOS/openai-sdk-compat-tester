@@ -7,8 +7,7 @@ import httpx
 import pytest
 from openai import OpenAI
 
-from openai_chat_compat_tester.live_config import choose_model_id
-from openai_chat_compat_tester.live_config import extract_model_ids
+from openai_chat_compat_tester.live_config import choose_model_id, extract_model_ids
 
 
 def _env_flag(name: str) -> bool:
@@ -21,14 +20,18 @@ def live_client() -> OpenAI:
     if not _env_flag("OPENAI_COMPAT_RUN_LIVE"):
         pytest.skip("set OPENAI_COMPAT_RUN_LIVE=1 to run live compatibility tests")
 
-    base_url = os.getenv("OPENAI_COMPAT_BASE_URL", "http://127.0.0.1:18080/v1").rstrip("/")
+    base_url = os.getenv("OPENAI_COMPAT_BASE_URL", "http://127.0.0.1:18080/v1").rstrip(
+        "/"
+    )
     api_key = os.getenv("OPENAI_COMPAT_API_KEY", "compat-test")
     readyz_url = base_url.removesuffix("/v1") + "/readyz"
 
     try:
         with urllib.request.urlopen(readyz_url, timeout=5) as response:
             if response.status != 200:
-                pytest.skip(f"router is not ready: GET {readyz_url} -> {response.status}")
+                pytest.skip(
+                    f"router is not ready: GET {readyz_url} -> {response.status}"
+                )
     except (urllib.error.URLError, TimeoutError) as exc:
         pytest.skip(f"router is not reachable at {readyz_url}: {exc}")
 
@@ -49,7 +52,9 @@ def model_name(live_client) -> str:
 
     try:
         available_models = extract_model_ids(response)
-        selected_model, used_fallback = choose_model_id(available_models, configured_model)
+        selected_model, used_fallback = choose_model_id(
+            available_models, configured_model
+        )
     except ValueError as exc:
         pytest.skip(str(exc))
 
