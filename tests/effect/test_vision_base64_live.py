@@ -1,4 +1,4 @@
-from openai_chat_compat_tester.test_support import (
+from openai_sdk_compat_tester.test_support import (
     RED_SQUARE_PNG_BASE64,
     conversation_messages,
     response_text,

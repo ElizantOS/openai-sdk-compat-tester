@@ -1,9 +1,9 @@
-# OpenAI Chat Compat Tester
+# OpenAI SDK Compat Tester
 
-![OpenAI Chat Compat Tester screenshot](./image.png)
+![OpenAI SDK Compat Tester screenshot](./image.png)
 
-Standalone conformance tester for APIs that claim compatibility with OpenAI
-`/v1/chat/completions`.
+Standalone conformance tester for APIs that claim compatibility with OpenAI SDK
+Chat Completions and Responses APIs.
 
 Chinese version: `README_ZH.md`
 
@@ -23,32 +23,44 @@ manual prompts.
 Install with `uv`:
 
 ```bash
-cd compat/openai-chat-compat-tester
+cd openai-sdk-compat-tester
 uv sync --extra dev
 ```
 
 Or with `venv` + `pip`:
 
 ```bash
-cd compat/openai-chat-compat-tester
+cd openai-sdk-compat-tester
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
 ```
 
+Run Chat Completions coverage only:
+
 ```bash
 OPENAI_COMPAT_RUN_LIVE=1 \
 OPENAI_COMPAT_BASE_URL=http://127.0.0.1:18080/v1 \
 OPENAI_COMPAT_MODEL=gpt-5.4 \
-pytest -q
+uv run openai-sdk-compat run --api-mode chat
 ```
 
-Run the standalone CLI:
+Run Responses API coverage only:
 
 ```bash
 OPENAI_COMPAT_RUN_LIVE=1 \
-OPENAI_COMPAT_BASE_URL=http://127.0.0.1:18080/v1 \
-openai-chat-compat run --suite effect
+OPENAI_COMPAT_BASE_URL=http://127.0.0.1:18080/compat/v1 \
+OPENAI_COMPAT_MODEL=gpt-5.4 \
+uv run openai-sdk-compat run --api-mode responses
+```
+
+Run both API modes:
+
+```bash
+OPENAI_COMPAT_RUN_LIVE=1 \
+OPENAI_COMPAT_BASE_URL=http://127.0.0.1:18080/compat/v1 \
+OPENAI_COMPAT_MODEL=gpt-5.4 \
+uv run openai-sdk-compat run --api-mode all
 ```
 
 ## CLI
@@ -56,7 +68,7 @@ openai-chat-compat run --suite effect
 List the inventory:
 
 ```bash
-openai-chat-compat list
+openai-sdk-compat list --api-mode all
 ```
 
 Run one suite and show a live terminal status panel:
@@ -65,8 +77,12 @@ Run one suite and show a live terminal status panel:
 OPENAI_COMPAT_RUN_LIVE=1 \
 OPENAI_COMPAT_BASE_URL=http://127.0.0.1:18080/v1 \
 OPENAI_COMPAT_MODEL=gpt-5.4 \
-openai-chat-compat run --suite effect
+openai-sdk-compat run --api-mode chat --suite effect
 ```
+
+Use `--api-mode chat`, `--api-mode responses`, or `--api-mode all`.
+Use `/v1` as the base URL for native OpenAI-compatible chat endpoints, and
+`/compat/v1` when testing this router's compat endpoints.
 
 `run` streams progress in real time as each capability starts and finishes, then
 prints a full matrix summary at the end.
@@ -83,7 +99,7 @@ Run one capability by slug:
 OPENAI_COMPAT_RUN_LIVE=1 \
 OPENAI_COMPAT_BASE_URL=http://127.0.0.1:18080/v1 \
 OPENAI_COMPAT_MODEL=gpt-5.4 \
-openai-chat-compat run --slug chat-logit-bias-semantic
+openai-sdk-compat run --api-mode chat --slug chat-logit-bias-semantic
 ```
 
 Write a machine-readable report:
@@ -91,26 +107,46 @@ Write a machine-readable report:
 ```bash
 OPENAI_COMPAT_RUN_LIVE=1 \
 OPENAI_COMPAT_BASE_URL=http://127.0.0.1:18080/v1 \
-openai-chat-compat run --suite contract --format json --output artifacts/report.json
+openai-sdk-compat run --api-mode chat --suite contract --format json --output artifacts/report.json
 ```
+
+Run the full suite across every model advertised by `/compat/v1/models`:
+
+```bash
+mkdir -p artifacts/model-matrix
+for model in $(curl -s http://127.0.0.1:18080/compat/v1/models | python3 -c 'import json,sys; print("\n".join(m["id"] for m in json.load(sys.stdin)["data"]))'); do
+  OPENAI_COMPAT_RUN_LIVE=1 \
+  OPENAI_COMPAT_BASE_URL=http://127.0.0.1:18080/compat/v1 \
+  OPENAI_COMPAT_MODEL="$model" \
+  openai-sdk-compat run --api-mode all --only-executed --format json \
+    --output "artifacts/model-matrix/${model}.json" \
+    > "artifacts/model-matrix/${model}.log" 2>&1 &
+done
+wait
+```
+
+Model matrix artifacts are intentionally ignored by git. They are useful for
+local compatibility triage, but should not be committed because they are live,
+account-specific evidence.
 
 ## CI Example
 
 ```yaml
 - name: Install tester
-  run: pip install openai-chat-compat-tester
+  run: pip install openai-sdk-compat-tester
 
 - name: Run contract suite
   env:
     OPENAI_COMPAT_RUN_LIVE: "1"
     OPENAI_COMPAT_BASE_URL: http://127.0.0.1:18080/v1
-  run: openai-chat-compat run --suite contract --format json --output artifacts/report.json
+  run: openai-sdk-compat run --api-mode chat --suite contract --format json --output artifacts/report.json
 ```
 
 ## Environment
 
 - `OPENAI_COMPAT_RUN_LIVE=1`
 - `OPENAI_COMPAT_BASE_URL`
+  Use `/compat/v1` when testing this router's OpenAI-style compat endpoints.
 - `OPENAI_COMPAT_API_KEY`
 - `OPENAI_COMPAT_MODEL`
   Optional override. The live suite validates it against `/v1/models` and falls
@@ -128,7 +164,8 @@ openai-chat-compat run --suite contract --format json --output artifacts/report.
   Observational only. These tests do not hard-fail support claims.
 - `Acceptance-only`
   A narrow exception used only when stable semantic validation is infeasible.
-  Currently this is reserved for planned `logit_bias` coverage.
+  Examples include chat `logit_bias` acceptance, chat sampling-control
+  acceptance, and Responses optional-field acceptance / compat-gap checks.
 
 ## Non-goals
 
@@ -149,15 +186,45 @@ openai-chat-compat run --suite contract --format json --output artifacts/report.
 - Multilingual context is mixed into conversation history using English,
   Japanese, and Chinese.
 
+## Prompt Stability Guidelines
+
+- Keep `system` messages focused on role, mode, and durable behavior.
+- Put case-specific facts, output keys, exact text, and field values in `user`
+  messages. This makes weaker or faster models less likely to overfit the role
+  prompt while still following the concrete task.
+- When a scenario compares default prose output against structured output, use
+  separate message lists for the baseline and structured calls. Avoid asking one
+  prompt to encode two contradictory modes.
+- Make semantic assertions robust against hidden reasoning-token variation. For
+  usage-scaling checks, request visibly longer exact text instead of relying on a
+  short phrase to produce more completion tokens.
+- For tool-result round trips, say explicitly whether a JSON tool result should
+  be echoed as JSON or parsed into a field value. Preserve the protocol
+  distinction between a tool result object and the final assistant text.
+
 ## Layout
 
-- `src/openai_chat_compat_tester/` package and CLI
+- `src/openai_sdk_compat_tester/` package and CLI
 - `tests/effect/` semantic behavior tests
 - `tests/contract/` protocol / shape / error / stream tests
 - `tests/probe/` observational tests
 - `tests/acceptance/` reserved for narrow exceptions
 - `tests/test_scenario_catalog.py` catalog sanity checks
 - `.github/workflows/ci.yml` example CI entrypoint for the standalone project
+
+## API Modes
+
+- `chat`: OpenAI Chat Completions compatibility.
+- `responses`: OpenAI Responses API compatibility.
+- `all`: list or run all covered scenarios.
+
+Examples:
+
+```bash
+openai-sdk-compat list --api-mode responses
+openai-sdk-compat run --api-mode responses --suite contract
+openai-sdk-compat run --api-mode all --only-executed
+```
 
 ## Covered Tests
 
@@ -179,7 +246,6 @@ openai-chat-compat run --suite contract --format json --output artifacts/report.
 - Sampling and deterministic behavior
   `tests/effect/test_stop_effect_live.py`
   `tests/effect/test_chat_seed_consistency_live.py`
-  `tests/effect/test_chat_frequency_presence_penalty_live.py`
   `tests/effect/test_chat_n_completions_live.py`
 - Multimodal and content semantics
   `tests/effect/test_vision_base64_live.py`
@@ -195,6 +261,8 @@ openai-chat-compat run --suite contract --format json --output artifacts/report.
 - Prompt cache and concurrency semantics
   `tests/effect/test_prompt_cache_hit_consistency_live.py`
   `tests/effect/test_concurrent_seed_consistency_live.py`
+- Responses API
+  `tests/effect/test_responses_*_live.py`
 
 ### Contract
 
@@ -207,7 +275,6 @@ openai-chat-compat run --suite contract --format json --output artifacts/report.
   `tests/contract/test_chat_logprobs_live.py`
   `tests/contract/test_chat_stream_include_usage_live.py`
   `tests/contract/test_finish_reason_length_live.py`
-  `tests/contract/test_finish_reason_content_filter_live.py`
   `tests/contract/test_finish_reason_error_state_live.py`
   `tests/contract/test_stream_first_chunk_role_live.py`
   `tests/contract/test_stream_chunk_order_live.py`
@@ -224,6 +291,8 @@ openai-chat-compat run --suite contract --format json --output artifacts/report.
   `tests/contract/test_service_tier_roundtrip_live.py`
   `tests/contract/test_usage_token_arithmetic_live.py`
   `tests/contract/test_usage_content_scale_live.py`
+- Responses API
+  `tests/contract/test_responses_*_live.py`
 
 ### Probe
 
@@ -231,12 +300,21 @@ openai-chat-compat run --suite contract --format json --output artifacts/report.
   `tests/probe/test_prompt_cache_latency_usage_live.py`
 - Service tier latency observability
   `tests/probe/test_service_tier_latency_probe_live.py`
+- Finish reason content-filter observability
+  `tests/probe/test_finish_reason_content_filter_live.py`
 
 ### Acceptance-only
 
 - `logit_bias`
   `tests/acceptance/test_chat_logit_bias_live.py`
   scope: validates request acceptance and normal response shape only
+- Chat sampling controls
+  `tests/acceptance/test_chat_frequency_presence_penalty_live.py`
+  `tests/acceptance/test_chat_temperature_live.py`
+  scope: validates request acceptance and normal response shape only
+- Responses optional fields
+  `tests/acceptance/test_responses_*_live.py`
+  scope: validates optional field acceptance and normal compat-gap error shapes
 
 ## Open Source Readiness Notes
 

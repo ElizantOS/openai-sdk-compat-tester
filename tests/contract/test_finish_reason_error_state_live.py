@@ -1,7 +1,7 @@
 import pytest
 from openai import BadRequestError
 
-from openai_chat_compat_tester.test_support import assert_error_response
+from openai_sdk_compat_tester.test_support import assert_error_response
 
 
 def test_finish_reason_error_state(live_client, model_name):

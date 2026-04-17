@@ -1,18 +1,19 @@
 [project]
-name = "openai-chat-compat-tester"
+name = "openai-sdk-compat-tester"
 version = "0.1.0"
-description = "Standalone conformance tester for OpenAI-compatible chat completions APIs."
+description = "Standalone conformance tester for OpenAI-compatible Chat Completions and Responses APIs."
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.9"
 authors = [
-    {name = "OpenAI Chat Compat Tester contributors"},
+    {name = "OpenAI SDK Compat Tester contributors"},
 ]
 keywords = [
     "openai",
     "compatibility",
     "conformance",
     "chat-completions",
+    "responses",
     "testing",
 ]
 classifiers = [
@@ -31,18 +32,17 @@ dependencies = [
     "httpx>=0.28.1",
     "openai>=1.107.0",
     "pillow>=10.0",
+    "pytest>=8.0",
     "rich>=14.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.0",
     "ruff>=0.8.0",
 ]
 
 [project.scripts]
-openai-chat-compat = "openai_chat_compat_tester.cli:main"
-openai-chat-compat-scenarios = "openai_chat_compat_tester.cli:main"
+openai-sdk-compat = "openai_sdk_compat_tester.cli:main"
 
 [build-system]
 requires = ["setuptools>=68"]

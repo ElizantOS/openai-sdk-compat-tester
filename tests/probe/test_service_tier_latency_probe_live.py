@@ -1,7 +1,7 @@
 import statistics
 import time
 
-from openai_chat_compat_tester.test_support import ALLOWED_SERVICE_TIERS, conversation_messages
+from openai_sdk_compat_tester.test_support import ALLOWED_SERVICE_TIERS, conversation_messages
 
 
 def test_service_tier_latency_probe(live_client, model_name, turn_mode):

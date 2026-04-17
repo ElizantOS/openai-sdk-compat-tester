@@ -1,6 +1,6 @@
 import json
 
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_sdk_compat_tester.test_support import conversation_messages
 
 
 def test_tool_streaming_delta_arguments(live_client, model_name, turn_mode):

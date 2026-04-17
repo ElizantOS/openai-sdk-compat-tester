@@ -1,4 +1,4 @@
-from openai_chat_compat_tester.test_support import conversation_messages, response_text
+from openai_sdk_compat_tester.test_support import conversation_messages, response_text
 
 
 def test_role_developer_system_priority(live_client, model_name, turn_mode):

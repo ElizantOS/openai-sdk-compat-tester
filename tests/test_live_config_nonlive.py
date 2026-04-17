@@ -1,4 +1,4 @@
-from openai_chat_compat_tester.live_config import choose_model_id, extract_model_ids
+from openai_sdk_compat_tester.live_config import choose_model_id, extract_model_ids
 
 
 class _Model:

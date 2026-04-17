@@ -1,4 +1,4 @@
-from openai_chat_compat_tester.test_support import literal_echo_request, response_text
+from openai_sdk_compat_tester.test_support import literal_echo_request, response_text
 
 
 def test_stop_effect(live_client, model_name, turn_mode):

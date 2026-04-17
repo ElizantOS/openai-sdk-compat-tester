@@ -1,4 +1,4 @@
-from openai_chat_compat_tester.test_support import (
+from openai_sdk_compat_tester.test_support import (
     GENERATED_OCR_TEXT,
     conversation_messages,
     make_text_image_data_url,

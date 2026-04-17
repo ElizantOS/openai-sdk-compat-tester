@@ -1,4 +1,4 @@
-from openai_chat_compat_tester.test_support import (
+from openai_sdk_compat_tester.test_support import (
     DEFAULT_RED_REMOTE_IMAGE_URL,
     conversation_messages,
     response_text,

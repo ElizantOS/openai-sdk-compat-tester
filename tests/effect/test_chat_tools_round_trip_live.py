@@ -1,4 +1,4 @@
-from openai_chat_compat_tester.test_support import with_multilingual_history
+from openai_sdk_compat_tester.test_support import with_multilingual_history
 
 
 def test_chat_tools_round_trip(live_client, model_name, tools):

@@ -15,8 +15,8 @@ SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from openai_chat_compat_tester.live_config import choose_model_id
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_sdk_compat_tester.live_config import choose_model_id
+from openai_sdk_compat_tester.test_support import conversation_messages
 
 EXPECTED = "A|B|C|D|E"
 

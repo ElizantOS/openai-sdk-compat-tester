@@ -1,4 +1,4 @@
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_sdk_compat_tester.test_support import conversation_messages
 
 
 def test_usage_token_arithmetic(live_client, model_name, turn_mode):

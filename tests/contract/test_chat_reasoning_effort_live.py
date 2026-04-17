@@ -4,7 +4,7 @@ import os
 import httpx
 import pytest
 
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_sdk_compat_tester.test_support import conversation_messages
 
 
 def _assert_reasoning_effort_echoes_upstream(model_name: str, effort: str) -> None:

@@ -22,6 +22,7 @@ from .scenarios import (
 )
 
 SUITES = ("effect", "contract", "probe", "acceptance")
+API_MODES = ("chat", "responses", "all")
 
 
 def _color(text: str, code: str) -> str:
@@ -61,7 +62,7 @@ def _status_icon(status: str) -> str:
 
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(prog="openai-chat-compat")
+    parser = argparse.ArgumentParser(prog="openai-sdk-compat")
     subparsers = parser.add_subparsers(dest="command")
 
     list_parser = subparsers.add_parser("list", help="List capability scenarios")
@@ -70,6 +71,12 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         choices=(*SUITES, "all"),
         default="all",
         help="Filter by test suite",
+    )
+    list_parser.add_argument(
+        "--api-mode",
+        choices=API_MODES,
+        default="chat",
+        help="Filter by API mode",
     )
     list_parser.add_argument(
         "--status",
@@ -84,6 +91,12 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         choices=(*SUITES, "all"),
         default="all",
         help="Run only one test suite",
+    )
+    run_parser.add_argument(
+        "--api-mode",
+        choices=API_MODES,
+        default="chat",
+        help="Run only one API mode",
     )
     run_parser.add_argument(
         "--slug",
@@ -131,9 +144,11 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def _selected_capabilities(suite: str, statuses: set[str], slugs: set[str]) -> list:
+def _selected_capabilities(suite: str, statuses: set[str], slugs: set[str], api_mode: str = "chat") -> list:
     selected = []
     for capability in CAPABILITIES:
+        if api_mode != "all" and capability.api_mode != api_mode:
+            continue
         if capability.status not in statuses:
             continue
         if suite != "all" and capability_suite(capability) != suite:
@@ -151,7 +166,7 @@ def _print_capabilities(capabilities: list) -> None:
         notes = f" - {capability.notes}" if capability.notes else ""
         suffix = f" ({capability.test_file})" if capability.test_file else ""
         print(
-            f"[{capability.status}][{suite}][{expectation}] {capability.category} / {capability.name}{suffix}{notes}"
+            f"[{capability.status}][{capability.api_mode}][{suite}][{expectation}] {capability.category} / {capability.name}{suffix}{notes}"
         )
 
 
@@ -231,12 +246,12 @@ def _build_run_report_lines(
                 expectation = capability_expectation(capability)
                 line = (
                     f"{_status_icon(status)} [{status}][{expectation}] "
-                    f"{capability.slug} ({elapsed_ms}ms) - {capability.name}"
+                    f"[{capability.api_mode}] {capability.slug} ({elapsed_ms}ms) - {capability.name}"
                 )
                 if summary and inline_summary:
                     line = (
                         f"{_status_icon(status)} [{status}][{expectation}] "
-                        f"{summary} | {capability.slug} ({elapsed_ms}ms) - {capability.name}"
+                        f"{summary} | [{capability.api_mode}] {capability.slug} ({elapsed_ms}ms) - {capability.name}"
                     )
                 lines.append(line)
                 if summary and not inline_summary:
@@ -247,13 +262,13 @@ def _build_run_report_lines(
                 counters["todo"] += 1
                 lines.append(
                     f"{_status_icon('todo')} [todo][{capability_expectation(capability)}] "
-                    f"{capability.slug} - {capability.name}"
+                    f"[{capability.api_mode}] {capability.slug} - {capability.name}"
                 )
             else:
                 counters["not-run"] += 1
                 lines.append(
                     f"{_status_icon('not-run')} [not-run][{capability_expectation(capability)}] "
-                    f"{capability.slug} - {capability.name}"
+                    f"[{capability.api_mode}] {capability.slug} - {capability.name}"
                 )
         lines.append("")
 
@@ -291,6 +306,7 @@ def _report_items(results: dict[str, tuple[str, float, str]], *, only_executed: 
                 "slug": capability.slug,
                 "name": capability.name,
                 "category": capability.category,
+                "api_mode": capability.api_mode,
                 "suite": capability_suite(capability),
                 "expectation": capability_expectation(capability),
                 "status": status,
@@ -318,7 +334,7 @@ def _build_json_report(
 ) -> dict[str, object]:
     items = _report_items(results, only_executed=only_executed)
     return {
-        "tool": "openai-chat-compat",
+        "tool": "openai-sdk-compat",
         "report_format": "json",
         "selected_slugs": selected_slugs,
         "only_executed": only_executed,
@@ -349,7 +365,7 @@ def _build_tui_renderable(
     return Group(
         Panel(
             Group(
-                Text("OpenAI Chat Compat Tester", style="bold cyan", no_wrap=True, overflow="ellipsis"),
+                Text("OpenAI SDK Compat Tester", style="bold cyan", no_wrap=True, overflow="ellipsis"),
                 Text(f"elapsed={elapsed}s", style="cyan", no_wrap=True, overflow="ellipsis"),
                 Text(
                     "Press Ctrl+C to stop. Live view updates after each scenario.",
@@ -465,8 +481,11 @@ def main() -> None:
     args = _parse_args(sys.argv[1:])
 
     if args.command == "list":
-        statuses = {"covered", "todo"} if args.status == "all" else {args.status}
-        capabilities = _selected_capabilities(args.suite, statuses, set())
+        status = getattr(args, "status", "all")
+        suite = getattr(args, "suite", "all")
+        api_mode = getattr(args, "api_mode", "chat")
+        statuses = {"covered", "todo"} if status == "all" else {status}
+        capabilities = _selected_capabilities(suite, statuses, set(), api_mode)
         _print_capabilities(capabilities)
         return
 
@@ -480,6 +499,7 @@ def main() -> None:
             args.suite,
             {"covered"},
             set(args.slug),
+            args.api_mode,
         )
         if not capabilities:
             print(_yellow("No matching covered capabilities selected."))
@@ -496,3 +516,7 @@ def main() -> None:
                 output_path=args.output,
             )
         )
+
+
+if __name__ == "__main__":
+    main()

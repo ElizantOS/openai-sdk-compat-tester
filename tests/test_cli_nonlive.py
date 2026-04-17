@@ -2,14 +2,14 @@ import json
 
 from rich.console import Console
 
-from openai_chat_compat_tester.cli import (
+from openai_sdk_compat_tester.cli import (
     _build_json_report,
     _print_run_report,
     _render_tui,
     _selected_capabilities,
     _write_output,
 )
-from openai_chat_compat_tester.scenarios import CAPABILITIES, capability_suite
+from openai_sdk_compat_tester.scenarios import CAPABILITIES, capability_suite
 
 
 def test_capability_suites_are_recognized():
@@ -32,7 +32,7 @@ def test_run_report_shows_full_matrix_by_default(capsys):
     )
     output = capsys.readouterr().out
     assert "Effect" in output
-    assert "[passed][strict-pass] chat-basic-non-stream" in output
+    assert "[passed][strict-pass] [chat] chat-basic-non-stream" in output
     assert "[not-run]" in output
 
 
@@ -44,7 +44,7 @@ def test_run_report_can_show_only_executed(capsys):
         only_executed=True,
     )
     output = capsys.readouterr().out
-    assert "[passed][strict-pass] chat-basic-non-stream" in output
+    assert "[passed][strict-pass] [chat] chat-basic-non-stream" in output
     assert "[not-run]" not in output
     assert "[todo]" not in output
 
@@ -60,10 +60,10 @@ def test_render_tui_outputs_live_panel(capsys):
         console=console,
     )
     output = capsys.readouterr().out
-    assert "OpenAI Chat Compat Tester" in output
+    assert "OpenAI SDK Compat Tester" in output
     assert "Live view updates after each scenario." in output
     assert "chat-basic-non-stream" in output
-    assert "[passed][strict-pass] 1 passed in 0.10s | chat-basic-non-stream (12.3ms)" in output
+    assert "[passed][strict-pass] 1 passed in 0.10s | [chat] chat-basic-non-stream (12.3ms)" in output
 
 
 def test_render_tui_truncates_long_lines_instead_of_wrapping(capsys):
@@ -94,7 +94,7 @@ def test_plain_report_keeps_summary_on_separate_line(capsys):
         only_executed=True,
     )
     output = capsys.readouterr().out
-    assert "[passed][strict-pass] chat-basic-non-stream" in output
+    assert "[passed][strict-pass] [chat] chat-basic-non-stream" in output
     assert "  1 passed in 0.10s" in output
 
 
@@ -104,11 +104,18 @@ def test_json_report_includes_counts_and_items():
         only_executed=True,
         selected_slugs=["chat-basic-non-stream"],
     )
-    assert report["tool"] == "openai-chat-compat"
+    assert report["tool"] == "openai-sdk-compat"
     assert report["counts"]["passed"] == 1
     assert report["counts"]["total"] == 1
     assert report["items"][0]["slug"] == "chat-basic-non-stream"
     assert report["items"][0]["status"] == "passed"
+    assert report["items"][0]["api_mode"] == "chat"
+
+
+def test_selected_capabilities_filter_by_api_mode():
+    selected = _selected_capabilities("all", {"covered"}, set(), "responses")
+    assert selected
+    assert all(capability.api_mode == "responses" for capability in selected)
 
 
 def test_write_output_creates_parent_directory(tmp_path):

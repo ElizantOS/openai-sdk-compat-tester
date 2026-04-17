@@ -1,4 +1,4 @@
-from openai_chat_compat_tester.test_support import (
+from openai_sdk_compat_tester.test_support import (
     stream_text_deltas,
     with_multilingual_history,
 )

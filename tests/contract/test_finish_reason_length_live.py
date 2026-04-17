@@ -1,4 +1,4 @@
-from openai_chat_compat_tester.test_support import conversation_messages
+from openai_sdk_compat_tester.test_support import conversation_messages
 
 
 def test_finish_reason_length(live_client, model_name, turn_mode):

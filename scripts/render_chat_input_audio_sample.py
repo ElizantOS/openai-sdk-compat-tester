@@ -12,7 +12,7 @@ SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from openai_chat_compat_tester.test_support import (
+from openai_sdk_compat_tester.test_support import (
     make_audio_file_wav_base64,
     make_spoken_wav_base64,
 )

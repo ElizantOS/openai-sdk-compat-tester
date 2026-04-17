@@ -12,6 +12,17 @@ from PIL import Image, ImageDraw, ImageFont
 RED_SQUARE_PNG_BASE64 = (
     "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAF0lEQVR4nGP8z0AaYCJR/aiGUQ1DSAMAQC4BH2bjRnMAAAAASUVORK5CYII="
 )
+RESPONSES_WEATHER_TOOL = {
+    "type": "function",
+    "name": "get_weather",
+    "description": "Get the current weather for a location",
+    "parameters": {
+        "type": "object",
+        "properties": {"location": {"type": "string"}},
+        "required": ["location"],
+        "additionalProperties": False,
+    },
+}
 DEFAULT_RED_REMOTE_IMAGE_URL = "https://dummyimage.com/16x16/ff0000/ff0000.png"
 ALLOWED_SERVICE_TIERS = {"auto", "default", "flex", "scale", "priority"}
 GENERATED_OCR_TEXT = "CAT-7294"
@@ -34,6 +45,72 @@ def response_text(resp) -> str:
             if text:
                 parts.append(text)
     return "".join(parts)
+
+
+def responses_output_types(response) -> list[str]:
+    return [getattr(item, "type", "") for item in (getattr(response, "output", None) or [])]
+
+
+def responses_text(response) -> str:
+    return (getattr(response, "output_text", "") or "").strip()
+
+
+def responses_function_call_items(response) -> list:
+    return [item for item in (getattr(response, "output", None) or []) if getattr(item, "type", "") == "function_call"]
+
+
+def assert_completed_response(response):
+    assert response.status == "completed"
+    assert getattr(response, "store", None) is False
+    assert getattr(response, "usage", None) is not None
+    assert getattr(response.usage, "total_tokens", 0) > 0
+
+
+def collect_response_stream_events(stream_ctx):
+    event_types = []
+    with stream_ctx as stream:
+        for event in stream:
+            event_types.append(event.type)
+        response = stream.get_final_response()
+    return event_types, response
+
+
+def assert_openai_error(exc, *, status_code: int, error_type: str, error_code: str, message_substring: str):
+    response = getattr(exc, "response", None)
+    assert response is not None
+    assert response.status_code == status_code
+    payload = response.json()
+    assert payload["error"]["type"] == error_type
+    assert payload["error"]["code"] == error_code
+    assert message_substring in payload["error"]["message"]
+
+
+def parse_response_function_arguments(item) -> dict:
+    return json.loads(getattr(item, "arguments", "{}"))
+
+
+def response_image_input_parts(prompt: str) -> list[dict]:
+    return [
+        {"type": "input_text", "text": prompt},
+        {"type": "input_image", "image_url": f"data:image/png;base64,{RED_SQUARE_PNG_BASE64}"},
+    ]
+
+
+def response_conversation_input(final_message: dict, turn_mode: str) -> list[dict]:
+    if turn_mode == "single-turn":
+        return [final_message]
+    return [
+        {"role": "user", "content": "Earlier context: my project code name is Atlas. Reply acknowledged."},
+        {"role": "assistant", "content": "acknowledged."},
+        final_message,
+    ]
+
+
+def first_event_with_prefix(event_types, prefix: str):
+    for event_type in event_types:
+        if event_type.startswith(prefix):
+            return event_type
+    return None
 
 
 def _multilingual_history(turn_pairs: int) -> list[dict]:

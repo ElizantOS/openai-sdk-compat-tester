@@ -1,7 +1,7 @@
 import pytest
 from openai import BadRequestError
 
-from openai_chat_compat_tester.test_support import assert_invalid_request_response
+from openai_sdk_compat_tester.test_support import assert_invalid_request_response
 
 
 def test_error_invalid_model(live_client):

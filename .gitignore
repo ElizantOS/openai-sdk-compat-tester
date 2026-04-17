@@ -10,4 +10,7 @@ dist/
 build/
 artifacts/*.json
 artifacts/*.xml
-
+artifacts/*.log
+artifacts/*.md
+artifacts/*.exit
+artifacts/model-matrix-*/

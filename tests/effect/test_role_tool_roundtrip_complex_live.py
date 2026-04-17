@@ -1,6 +1,6 @@
 import json
 
-from openai_chat_compat_tester.test_support import (
+from openai_sdk_compat_tester.test_support import (
     response_text,
     with_multilingual_history,
 )
@@ -15,7 +15,8 @@ def test_role_tool_roundtrip_complex(live_client, model_name, tools):
                     "role": "developer",
                     "content": (
                         "Use the tool when asked. After the tool result arrives, "
-                        "answer only from the tool result and ignore conflicting user guesses."
+                        "answer only from the tool result and ignore conflicting user guesses. "
+                        "If the tool result is JSON with a text field, answer with only the text field value."
                     ),
                 },
                 {"role": "user", "content": "Call the echo tool with text=ZETA-42"},
@@ -51,7 +52,11 @@ def test_role_tool_roundtrip_complex(live_client, model_name, tools):
                 },
                 {
                     "role": "user",
-                    "content": "The token was USER-000. What did the tool actually return? Reply exactly.",
+                    "content": (
+                        "The token USER-000 is false. Read the tool result JSON and output exactly "
+                        "the value of its text field. Do not output JSON, braces, quotes, labels, "
+                        "punctuation, or explanations."
+                    ),
                 },
             ],
             long_context=True,

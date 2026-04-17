@@ -1,7 +1,7 @@
 import ast
 from pathlib import Path
 
-from openai_chat_compat_tester.scenarios import CAPABILITIES
+from openai_sdk_compat_tester.scenarios import CAPABILITIES
 
 
 def test_scenario_ids_are_unique():
@@ -26,6 +26,11 @@ def test_effect_conversation_coverage_rule_is_explicit():
         "test_chat_tools_round_trip_live.py",
         "test_history_assistant_priority_live.py",
         "test_role_tool_roundtrip_complex_live.py",
+        "test_responses_assistant_history_live.py",
+        "test_responses_image_input_live.py",
+        "test_responses_non_stream_aggregation_live.py",
+        "test_responses_string_input_live.py",
+        "test_responses_system_plus_assistant_history_live.py",
     }
 
     for path in sorted(effect_dir.glob("test_*_live.py")):

@@ -7,7 +7,7 @@ import httpx
 import pytest
 from openai import OpenAI
 
-from openai_chat_compat_tester.live_config import choose_model_id, extract_model_ids
+from openai_sdk_compat_tester.live_config import choose_model_id, extract_model_ids
 
 
 def _env_flag(name: str) -> bool:
@@ -24,7 +24,10 @@ def live_client() -> OpenAI:
         "/"
     )
     api_key = os.getenv("OPENAI_COMPAT_API_KEY", "compat-test")
-    readyz_url = base_url.removesuffix("/v1") + "/readyz"
+    if base_url.endswith("/compat/v1"):
+        readyz_url = base_url.removesuffix("/compat/v1") + "/readyz"
+    else:
+        readyz_url = base_url.removesuffix("/v1") + "/readyz"
 
     try:
         with urllib.request.urlopen(readyz_url, timeout=5) as response:
