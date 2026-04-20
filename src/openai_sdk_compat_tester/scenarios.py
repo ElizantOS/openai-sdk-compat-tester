@@ -630,6 +630,14 @@ CAPABILITIES = [
         api_mode="responses",
     ),
     Capability(
+        slug="responses-stream-terminal-function-call-output",
+        category="Responses Contract",
+        name="Stream terminal function call output",
+        status="covered",
+        test_file="tests/contract/test_responses_stream_terminal_function_call_output_live.py",
+        api_mode="responses",
+    ),
+    Capability(
         slug="responses-streaming-invalid-input-item-type-error",
         category="Responses Contract",
         name="Streaming invalid input item type error",
