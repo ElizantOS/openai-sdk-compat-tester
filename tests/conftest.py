@@ -41,7 +41,7 @@ def live_client() -> OpenAI:
     return OpenAI(
         api_key=api_key,
         base_url=base_url,
-        http_client=httpx.Client(trust_env=False),
+        http_client=httpx.Client(trust_env=True),
     )
 
 

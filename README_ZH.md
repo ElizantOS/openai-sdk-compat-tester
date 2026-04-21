@@ -162,6 +162,8 @@ wait
 - `OPENAI_COMPAT_MODEL`
   可选覆盖项。live 套件会先用 `/v1/models` 校验它；如果未设置或当前不可用，
   会自动回退到列表里的第一个模型。
+- live 测试的 HTTP 客户端默认会读取系统代理环境变量，包括
+  `HTTP_PROXY`、`HTTPS_PROXY` 和 `NO_PROXY`。
 
 ## 结果语义
 

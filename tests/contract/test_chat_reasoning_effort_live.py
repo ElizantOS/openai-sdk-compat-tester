@@ -24,7 +24,7 @@ def _assert_reasoning_effort_echoes_upstream(model_name: str, effort: str) -> No
 
     created_effort = None
     completed_effort = None
-    with httpx.Client(timeout=30.0, trust_env=False, headers=headers) as client:
+    with httpx.Client(timeout=30.0, trust_env=True, headers=headers) as client:
         with client.stream("POST", f"{base_url}/responses", json=payload) as response:
             response.raise_for_status()
             for raw_line in response.iter_lines():

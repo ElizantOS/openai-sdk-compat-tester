@@ -151,6 +151,8 @@ account-specific evidence.
 - `OPENAI_COMPAT_MODEL`
   Optional override. The live suite validates it against `/v1/models` and falls
   back to the first advertised model when it is unset or unavailable.
+- Live HTTP clients read the system proxy environment by default, including
+  `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY`.
 
 ## Result Semantics
 
