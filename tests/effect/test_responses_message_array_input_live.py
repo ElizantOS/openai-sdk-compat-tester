@@ -1,7 +1,6 @@
 from openai_sdk_compat_tester.test_support import (
     assert_completed_response,
     response_conversation_input,
-    response_image_input_parts,
     responses_text,
 )
 

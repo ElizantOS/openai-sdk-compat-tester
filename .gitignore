@@ -14,3 +14,5 @@ artifacts/*.log
 artifacts/*.md
 artifacts/*.exit
 artifacts/model-matrix-*/
+
+.omx/

@@ -1,10 +1,5 @@
-import pytest
-from openai import InternalServerError
 from openai_sdk_compat_tester.test_support import (
-    RESPONSES_WEATHER_TOOL,
     assert_completed_response,
-    assert_openai_error,
-    responses_function_call_items,
 )
 
 

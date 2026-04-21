@@ -1,6 +1,4 @@
-import pytest
-from openai import InternalServerError
-from openai_sdk_compat_tester.test_support import assert_completed_response, assert_openai_error, responses_text
+from openai_sdk_compat_tester.test_support import assert_completed_response, responses_text
 
 
 def test_responses_json_object_text_format_live(live_client, model_name: str):

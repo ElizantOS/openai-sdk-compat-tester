@@ -1,4 +1,4 @@
-from openai_sdk_compat_tester.test_support import assert_completed_response, responses_text
+from openai_sdk_compat_tester.test_support import assert_completed_response
 
 
 def test_responses_system_and_developer_precedence_live(live_client, model_name: str):

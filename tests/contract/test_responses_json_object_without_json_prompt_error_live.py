@@ -1,6 +1,7 @@
 import pytest
 from openai import InternalServerError
-from openai_sdk_compat_tester.test_support import assert_completed_response, assert_openai_error, responses_text
+
+from openai_sdk_compat_tester.test_support import assert_openai_error
 
 
 def test_responses_json_object_without_json_prompt_error_live(live_client, model_name: str):

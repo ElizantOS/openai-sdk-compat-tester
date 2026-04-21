@@ -1,6 +1,4 @@
-import pytest
-from openai import BadRequestError
-from openai_sdk_compat_tester.test_support import assert_completed_response, assert_openai_error
+from openai_sdk_compat_tester.test_support import assert_completed_response
 
 
 def test_responses_temperature_and_token_limits_are_accepted_live(live_client, model_name: str):
