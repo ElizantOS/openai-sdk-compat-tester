@@ -1,4 +1,4 @@
-from openai_sdk_compat_tester.test_support import assert_completed_response, responses_text
+from openai_sdk_compat_tester.test_support import assert_completed_response
 
 
 def test_responses_explicit_instructions_override_hoisted_roles_live(live_client, model_name: str):

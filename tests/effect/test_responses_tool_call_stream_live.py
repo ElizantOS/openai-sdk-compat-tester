@@ -3,9 +3,7 @@ from openai_sdk_compat_tester.test_support import (
     assert_completed_response,
     collect_response_stream_events,
     first_event_with_prefix,
-    parse_response_function_arguments,
     response_conversation_input,
-    responses_function_call_items,
 )
 
 
