@@ -1,6 +1,4 @@
-import pytest
-from openai import BadRequestError
-from openai_sdk_compat_tester.test_support import assert_completed_response, assert_openai_error
+from openai_sdk_compat_tester.test_support import assert_completed_response
 
 
 def test_responses_reasoning_effort_live(live_client, model_name: str):
